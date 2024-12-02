@@ -9,11 +9,12 @@ const multer = require('multer');
 require('dotenv').config(); // To load environment variables from a .env file
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // Configuration du middleware CORS
+
 app.use(cors({
-  origin: '*' // Replace with your frontend URL
+    origin: ['http://localhost:8080', 'http://127.0.0.1']
 }));
 
 // Middleware pour parser les requêtes JSON
@@ -21,11 +22,11 @@ app.use(express.json());
 
 // Connexion à PostgreSQL
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'certifications_db',
-  password: 'Ilearn',
-  port: 5432,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
 });
 
 const db = {
@@ -89,7 +90,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });;
 
 // Ajouter une certification
-app.post('/certifications', authenticateToken, upload.single('pdf'), async (req, res) => {
+app.post('/api/certifications', authenticateToken, upload.single('pdf'), async (req, res) => {
     const { employee_id, title, issued_date } = req.body;
     const pdf_data = req.file.buffer;
   
@@ -105,7 +106,7 @@ app.post('/certifications', authenticateToken, upload.single('pdf'), async (req,
     }
   });
 
-app.get('/certifications/:id/pdf', async (req, res) => {
+app.get('/api/certifications/:id/pdf', async (req, res) => {
     const { id } = req.params;
 
     if (isNaN(id)) {
@@ -129,7 +130,7 @@ app.get('/certifications/:id/pdf', async (req, res) => {
     }
 });
 
-app.get('/certifications/:id', authenticateToken, async (req, res) => {
+app.get('/api/certifications/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
   
     if (isNaN(id)) {
@@ -152,7 +153,7 @@ app.get('/certifications/:id', authenticateToken, async (req, res) => {
     }
 });
 
-app.delete('/certifications/:id', authenticateToken, async (req, res) => {
+app.delete('/api/certifications/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
   
     if (isNaN(id)) {
@@ -175,7 +176,7 @@ app.delete('/certifications/:id', authenticateToken, async (req, res) => {
 });
 
 // Route pour récupérer tous les employés
-app.get('/employees', async (req, res) => {
+app.get('/api/employees', async (req, res) => {
   const query = 'SELECT id, name, position, enterprise_id, manager_id FROM employees';
 
   try {
@@ -187,7 +188,7 @@ app.get('/employees', async (req, res) => {
   }
 });
 
-app.get('/employees/:id', authenticateToken, async (req, res) => {
+app.get('/api/employees/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
   
     if (isNaN(id)) {
@@ -220,7 +221,7 @@ app.get('/employees/:id', authenticateToken, async (req, res) => {
 
 // Ajouter un employé
 
-app.post('/employees', authenticateToken, async (req, res) => {
+app.post('/api/employees', authenticateToken, async (req, res) => {
     const { name, position, email } = req.body;
     const managerId = req.user.id;
 
@@ -258,7 +259,7 @@ app.post('/employees', authenticateToken, async (req, res) => {
 });
 
 
-app.put('/employees/:id/password', async (req, res) => {
+app.put('/api/employees/:id/password', async (req, res) => {
     const { id } = req.params;
     const { currentPassword, newPassword } = req.body;
   
@@ -290,7 +291,7 @@ app.put('/employees/:id/password', async (req, res) => {
     }
 });
 
-app.get('/employees/:id/certifications', authenticateToken, async (req, res) => {
+app.get('/api/employees/:id/certifications', authenticateToken, async (req, res) => {
     const { id } = req.params;
   
     if (isNaN(id)) {
@@ -313,7 +314,7 @@ app.get('/employees/:id/certifications', authenticateToken, async (req, res) => 
 });
 
 // Mettre à jour un employé
-app.put('/employees/:id', authenticateToken, async (req, res) => {
+app.put('/api/employees/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { name, position } = req.body;
   
@@ -351,7 +352,7 @@ app.put('/employees/:id', authenticateToken, async (req, res) => {
     }
 });
 // Supprimer un employé
-app.delete('/employees/:id', authenticateToken, async (req, res) => {
+app.delete('/api/employees/:id', authenticateToken, async (req, res) => {
 	const { id } = req.params;
   
 	if (isNaN(id)) {
@@ -375,7 +376,7 @@ app.delete('/employees/:id', authenticateToken, async (req, res) => {
   });
 
 // Ajouter un utilisateur
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
 	const { username, password, role, email } = req.body;
 	const saltRounds = 10;
   
@@ -401,7 +402,7 @@ app.post('/register', async (req, res) => {
 	}
 });
 
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
   
     try {
@@ -452,7 +453,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Route de déconnexion
-app.post('/logout', (req, res) => {
+app.post('/api/logout', (req, res) => {
 	res.send({ message: 'Logout successful' });
   });
 
@@ -468,7 +469,7 @@ function generateRefreshToken(user) {
 
 
 // Route to get employees managed by a specific manager
-app.get('/manager/employees', authenticateToken, async (req, res) => {
+app.get('/api/manager/employees', authenticateToken, async (req, res) => {
     if (req.user.role !== 'manager') {
       return res.sendStatus(403);
     }
@@ -493,11 +494,12 @@ app.get('/manager/employees', authenticateToken, async (req, res) => {
 });
 
 // Route pour générer un QR code
-app.get('/employees/:id/qrcode', async (req, res) => {
+app.get('/api/employees/:id/qrcode', async (req, res) => {
     const { id } = req.params;
   
     // Generate URL for the public employee page
-    const url = `http://localhost:8080/public/employee/${id}`;
+    const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
+    const url = `${baseUrl}/public/employee/${id}`;
   
     try {
       // Generate QR code as a data URL
@@ -509,7 +511,7 @@ app.get('/employees/:id/qrcode', async (req, res) => {
     }
 });
 
-app.post('/public/employees/:id', async (req, res) => {
+app.post('/api/public/employees/:id', async (req, res) => {
     const { id } = req.params;
     const { password } = req.body;
   
@@ -549,7 +551,7 @@ app.post('/public/employees/:id', async (req, res) => {
     }
 });
 // Route to get managers
-app.get('/admin/managers', authenticateToken, async (req, res) => {
+app.get('/api/admin/managers', authenticateToken, async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.sendStatus(403);
     }
@@ -563,7 +565,7 @@ app.get('/admin/managers', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/admin/managers', authenticateToken, async (req, res) => {
+app.post('/api/admin/managers', authenticateToken, async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.sendStatus(403);
     }
@@ -611,7 +613,7 @@ app.post('/admin/managers', authenticateToken, async (req, res) => {
 });
 
 //Route to modify a manager
-app.put('/admin/managers/:id', authenticateToken, async (req, res) => {
+app.put('/api/admin/managers/:id', authenticateToken, async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.sendStatus(403);
     }
@@ -638,7 +640,7 @@ app.put('/admin/managers/:id', authenticateToken, async (req, res) => {
     }
 });
  // Route to get certifications expiring in the specified time frame and expired certifications
-app.get('/manager/expirations', authenticateToken, async (req, res) => {
+app.get('/api/manager/expirations', authenticateToken, async (req, res) => {
     if (req.user.role !== 'manager') {
       return res.sendStatus(403);
     }
@@ -692,7 +694,7 @@ app.get('/manager/expirations', authenticateToken, async (req, res) => {
 });
   
   // Route to get expired certifications
-app.get('/manager/expired', authenticateToken, async (req, res) => {
+app.get('/api/manager/expired', authenticateToken, async (req, res) => {
     if (req.user.role !== 'manager') {
       return res.sendStatus(403);
     }
@@ -737,7 +739,7 @@ app.get('/manager/expired', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/superadmin/admins', authenticateToken, async (req, res) => {
+app.post('/api/superadmin/admins', authenticateToken, async (req, res) => {
     if (req.user.role !== 'superadmin') {
       return res.sendStatus(403);
     }
@@ -773,7 +775,7 @@ app.post('/superadmin/admins', authenticateToken, async (req, res) => {
     }
 });
 
-app.get('/superadmin/admins', authenticateToken, async (req, res) => {
+app.get('/api/superadmin/admins', authenticateToken, async (req, res) => {
     if (req.user.role !== 'superadmin') {
       return res.sendStatus(403);
     }
@@ -787,7 +789,7 @@ app.get('/superadmin/admins', authenticateToken, async (req, res) => {
     }
 });
 
-app.get('/superadmin/admins/:id', authenticateToken, async (req, res) => {
+app.get('/api/superadmin/admins/:id', authenticateToken, async (req, res) => {
     if (req.user.role !== 'superadmin') {
       return res.sendStatus(403);
     }
@@ -825,7 +827,7 @@ app.get('/superadmin/admins/:id', authenticateToken, async (req, res) => {
     }
 });
 
-app.put('/superadmin/admins/:id/deactivate', authenticateToken, async (req, res) => {
+app.put('/api/superadmin/admins/:id/deactivate', authenticateToken, async (req, res) => {
     if (req.user.role !== 'superadmin') {
       return res.sendStatus(403);
     }
@@ -880,7 +882,7 @@ app.put('/superadmin/admins/:id/deactivate', authenticateToken, async (req, res)
     }
 });
 
-app.put('/superadmin/admins/:id/reactivate', authenticateToken, async (req, res) => {
+app.put('/api/superadmin/admins/:id/reactivate', authenticateToken, async (req, res) => {
     if (req.user.role !== 'superadmin') {
       return res.sendStatus(403);
     }
@@ -926,7 +928,7 @@ app.put('/superadmin/admins/:id/reactivate', authenticateToken, async (req, res)
     }
 });
     
-app.get('/admin/subscription', authenticateToken, async (req, res) => {
+app.get('/api/admin/subscription', authenticateToken, async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.sendStatus(403);
     }
@@ -959,7 +961,7 @@ app.get('/admin/subscription', authenticateToken, async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+    console.log(`Server is running on port ${port}`);
 });
 
 function buildCertificationExpirationQuery() {

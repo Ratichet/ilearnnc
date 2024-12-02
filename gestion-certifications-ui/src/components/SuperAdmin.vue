@@ -118,8 +118,13 @@ export default {
       this.showAddAdminForm = !this.showAddAdminForm;
     },
     async addAdmin() {
+      // Validate newAdmin data
+      if (!this.newAdmin.username || !this.newAdmin.password || !this.newAdmin.email || !this.newAdmin.enterpriseName || this.newAdmin.maxManagers <= 0 || this.newAdmin.maxEmployes <= 0 || !this.newAdmin.startDate || !this.newAdmin.endDate) {
+        this.errorMessage = 'Veuillez remplir tous les champs correctement.';
+        return;
+      }
       try {
-        await axios.post('http://localhost:3000/superadmin/admins', this.newAdmin, {
+        await axios.post(`${process.env.VUE_APP_API_BASE_URL}/superadmin/admins`, this.newAdmin, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -148,7 +153,7 @@ export default {
     },
     async fetchAdmins() {
       try {
-        const response = await axios.get('http://localhost:3000/superadmin/admins', {
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/superadmin/admins`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -166,7 +171,7 @@ export default {
           return;
         }
 
-        await axios.put(`http://localhost:3000/superadmin/admins/${adminId}/deactivate`, {}, {
+        await axios.put(`${process.env.VUE_APP_API_BASE_URL}/superadmin/admins/${adminId}/deactivate`, {}, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -185,7 +190,7 @@ export default {
         return;
         }
 
-        await axios.put(`http://localhost:3000/superadmin/admins/${adminId}/reactivate`, {}, {
+        await axios.put(`${process.env.VUE_APP_API_BASE_URL}/superadmin/admins/${adminId}/reactivate`, {}, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }

@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     fetchEmployees() {
-      axiosInstance.get('http://localhost:3000/manager/employees', {
+      axiosInstance.get(`${process.env.VUE_APP_API_BASE_URL}/manager/employees`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -144,7 +144,7 @@ export default {
         });
     },
     addEmployee() {
-      axios.post('http://localhost:3000/employees', this.newEmployee, {
+      axios.post(`${process.env.VUE_APP_API_BASE_URL}/employees`, this.newEmployee, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -181,7 +181,7 @@ export default {
       this.pdfUrl = '';
       this.errorMessage = '';
 
-      axios.get(`http://localhost:3000/employees/${employeeId}/certifications`, {
+      axios.get(`${process.env.VUE_APP_API_BASE_URL}/employees/${employeeId}/certifications`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -195,10 +195,10 @@ export default {
         });
 
       // Fetch QR code for the employee
-      axios.get(`http://localhost:3000/employees/${employeeId}/qrcode`)
+      axios.get(`${process.env.VUE_APP_API_BASE_URL}/employees/${employeeId}/qrcode`)
         .then(response => {
           this.qrCodeData = response.data.qrCodeData;
-          this.publicEmployeeUrl = `http://localhost:8080/public/employee/${employeeId}`;
+          this.publicEmployeeUrl = `${process.env.VUE_APP_PUBLIC_BASE_URL}/public/employee/${employeeId}`;
         })
         .catch(error => {
           console.error('Error fetching QR code:', error);
@@ -215,7 +215,7 @@ export default {
       formData.append('issued_date', this.certification.issued_date);
       formData.append('pdf', this.pdfFile);
 
-      axios.post('http://localhost:3000/certifications', formData, {
+      axios.post(`${process.env.VUE_APP_API_BASE_URL}/certifications`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data'
@@ -231,10 +231,10 @@ export default {
         });
     },
     viewCertification(certificationId) {
-      this.pdfUrl = `http://localhost:3000/certifications/${certificationId}/pdf?token=${localStorage.getItem('token')}`;
+      this.pdfUrl = `${process.env.VUE_APP_API_BASE_URL}/certifications/${certificationId}/pdf?token=${localStorage.getItem('token')}`;
     },
     deleteCertification(certificationId) {
-      axios.delete(`http://localhost:3000/certifications/${certificationId}`, {
+      axios.delete(`${process.env.VUE_APP_API_BASE_URL}/certifications/${certificationId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -248,7 +248,7 @@ export default {
         });
     },
     deleteEmployee(employeeId) {
-      axios.delete(`http://localhost:3000/employees/${employeeId}`, {
+      axios.delete(`${process.env.VUE_APP_API_BASE_URL}/employees/${employeeId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }

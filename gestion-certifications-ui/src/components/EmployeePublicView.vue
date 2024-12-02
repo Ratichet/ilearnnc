@@ -74,27 +74,27 @@ export default {
   },
   methods: {
     authenticate() {
-      const employeeId = this.$route.params.id;
-      axios.post(`http://localhost:3000/public/employees/${employeeId}`, { password: this.password })
-        .then(response => {
-          this.employee = response.data.employee;
-          this.certifications = response.data.certifications;
-          this.isAuthenticated = true;
-          this.errorMessage = '';
-        })
-        .catch(error => {
-          if (error.response) {
-            if (error.response.data.code === 'ACCOUNT_DESACTIVATED') {
-              this.$router.push('/desactivated');
-            } else {
-              this.errorMessage = 'Mot de passe incorrect. Veuillez réessayer.';
-            }
+    const employeeId = this.$route.params.id;
+    axios.post(`${process.env.VUE_APP_API_BASE_URL}/public/employees/${employeeId}`, { password: this.password })
+      .then(response => {
+        this.employee = response.data.employee;
+        this.certifications = response.data.certifications;
+        this.isAuthenticated = true;
+        this.errorMessage = '';
+      })
+      .catch(error => {
+        if (error.response) {
+          if (error.response.data.code === 'ACCOUNT_DESACTIVATED') {
+            this.$router.push('/desactivated');
           } else {
-            console.error('Error fetching employee data:', error);
-            this.errorMessage = 'Erreur lors de la connexion. Veuillez réessayer plus tard.';
+            this.errorMessage = 'Mot de passe incorrect. Veuillez réessayer.';
           }
-        });
-    },
+        } else {
+          console.error('Error fetching employee data:', error);
+          this.errorMessage = 'Erreur lors de la connexion. Veuillez réessayer plus tard.';
+        }
+      });
+  },
     togglePasswordForm() {
       this.showPasswordForm = !this.showPasswordForm;
     },
@@ -105,7 +105,7 @@ export default {
       }
 
       const employeeId = this.$route.params.id;
-      axios.put(`http://localhost:3000/employees/${employeeId}/password`, {
+      axios.put(`${process.env.VUE_APP_API_BASE_URL}/employees/${employeeId}/password`, {
         currentPassword: this.currentPassword,
         newPassword: this.newPassword
       }, {
@@ -126,7 +126,7 @@ export default {
         });
     },
     viewPdf(certificationId) {
-      this.pdfUrl = `http://localhost:3000/certifications/${certificationId}/pdf?token=${localStorage.getItem('token')}`;
+      this.pdfUrl = `${process.env.VUE_APP_API_BASE_URL}/${certificationId}/pdf?token=${localStorage.getItem('token')}`;
     },
     closePdf() {
       this.pdfUrl = '';

@@ -45,7 +45,6 @@ body {
   --danger-hover-color: rgb(97, 11, 11);     /* Rouge plus foncé */
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
 background: linear-gradient(135deg, #06003e, #033f21, #06003e);
   margin: 0;
   padding: 0;

@@ -1,7 +1,9 @@
 <template>
   <div class="admin-manager">
     <!-- Logout Button -->
-    <button @click="logout" class="logout-btn">Logout</button>
+    <button 
+      @click="logout" 
+      class="logout-btn">Logout</button>
 
     <h1>Admin Dashboard</h1>
     <button @click="toggleAddManagerForm" class="btn primary">
@@ -112,7 +114,7 @@ export default {
       }
       this.passwordError = '';
       try {
-        await axios.post('http://localhost:3000/admin/managers', this.newManager, {
+        await axios.post(`${process.env.VUE_APP_API_BASE_URL}/admin/managers`, this.newManager, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -149,7 +151,7 @@ export default {
     },
     async fetchManagers() {
       try {
-        const response = await axios.get('http://localhost:3000/admin/managers', {
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/admin/managers`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -178,7 +180,7 @@ export default {
       if (this.selectedManager.password) {
         updateData.password = this.selectedManager.password;
       }
-      await axios.put(`http://localhost:3000/admin/managers/${this.selectedManager.id}`, updateData, {
+      await axios.put(`${process.env.VUE_APP_API_BASE_URL}/admin/managers/${this.selectedManager.id}`, updateData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }

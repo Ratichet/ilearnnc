@@ -29,7 +29,7 @@ export default {
   methods: {
     async fetchSubscriptionDetails() {
       try {
-        const response = await axios.get('http://localhost:3000/admin/subscription', {
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/admin/subscription`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }

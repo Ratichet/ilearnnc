@@ -35,38 +35,54 @@ export default {
     return { router };
 },  
 methods: {
-	async login() {
-    try{
-    const response = await axios.post('http://localhost:3000/login', {
-		username: this.username,
-		password: this.password
-	}); 
-    if (response.data.code === 'USER_DESACTIVATED' && response.data.user.role === 'admin') {
-        // Rediriger vers la page de renouvellement
-        this.$router.push('/renew-subscription');
-        return;
-    } else if (response.data.code === 'USER_DESACTIVATED' && response.data.user.role === 'manager') {
-        // Rediriger vers la page de compte désactivé
-        this.$router.push('/desactivated');
-        return;
+  async login() {
+    try {
+      const response = await this.authenticateUser();
+      this.handleLoginResponse(response);
+    } catch (error) {
+      this.handleLoginError(error);
     }
-		localStorage.setItem('token', response.data.accessToken);
-		localStorage.setItem('userId', response.data.user.id);
-		localStorage.setItem('userRole', response.data.user.role); // Enregistrer le rôle
-		if (response.data.user.role === 'admin') {
-            this.$router.push('/admin'); // Redirection après connexion réussie
-        } else if (response.data.user.role === 'manager') {
-            this.$router.push('/manager'); // Redirection après connexion réussie
-        } else if (response.data.user.role === 'superadmin') {
-            this.$router.push('/superadmin'); // Redirection après connexion réussie
-        } else {
-            this.errorMessage = 'Rôle inconnu. Veuillez contacter l\'administrateur.';
-        }
-	}
-    catch (error) {
-        console.error('Login error:', error);
-        this.errorMessage = 'Nom d\'utilisateur ou mot de passe incorrect.';
+  },
+  async authenticateUser() {
+    return await axios.post(`${process.env.VUE_APP_API_BASE_URL}/login`, {
+      username: this.username,
+      password: this.password
+    });
+  },
+  handleLoginResponse(response) {
+    if (response.data.code === 'USER_DESACTIVATED') {
+      this.handleUserDeactivated(response.data.user.role);
+      return;
     }
+    this.storeUserData(response.data);
+    this.redirectUser(response.data.user.role);
+  },
+  handleUserDeactivated(role) {
+    if (role === 'admin') {
+      this.$router.push('/renew-subscription');
+    } else if (role === 'manager') {
+      this.$router.push('/desactivated');
+    }
+  },
+  storeUserData(data) {
+    localStorage.setItem('token', data.accessToken);
+    localStorage.setItem('userId', data.user.id);
+    localStorage.setItem('userRole', data.user.role);
+  },
+  redirectUser(role) {
+    if (role === 'admin') {
+      this.$router.push('/admin');
+    } else if (role === 'manager') {
+      this.$router.push('/manager');
+    } else if (role === 'superadmin') {
+      this.$router.push('/superadmin');
+    } else {
+      this.errorMessage = 'Rôle inconnu. Veuillez contacter l\'administrateur.';
+    }
+  },
+  handleLoginError(error) {
+    console.error('Login error:', error);
+    this.errorMessage = 'Nom d\'utilisateur ou mot de passe incorrect.';
   }
 }
 };

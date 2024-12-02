@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     fetchExpirations(months) {
-      axios.get(`http://localhost:3000/manager/expirations?months=${months}`, {
+      axios.get(`${process.env.VUE_APP_API_BASE_URL}/manager/expirations?months=${months}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -62,13 +62,13 @@ export default {
         });
     },
     viewPdf(certificationId) {
-      this.pdfUrl = `http://localhost:3000/certifications/${certificationId}/pdf?token=${localStorage.getItem('token')}`;
+      this.pdfUrl = `${process.env.VUE_APP_API_BASE_URL}/certifications/${certificationId}/pdf?token=${localStorage.getItem('token')}`;
     },
     closePdf() {
       this.pdfUrl = '';
     },
     fetchExpired() {
-      axios.get('http://localhost:3000/manager/expired', {
+      axios.get(`${process.env.VUE_APP_API_BASE_URL}/manager/expired`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }

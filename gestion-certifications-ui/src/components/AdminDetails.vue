@@ -62,7 +62,7 @@ export default {
     async fetchAdminDetails() {
       const adminId = this.route.params.id;
       try {
-        const adminResponse = await axios.get(`http://localhost:3000/superadmin/admins/${adminId}`, {
+        const adminResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/superadmin/admins/${adminId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }

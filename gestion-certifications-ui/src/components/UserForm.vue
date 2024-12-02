@@ -46,7 +46,7 @@ export default {
         return;
       }
 
-      axios.post('http://localhost:3000/register', {
+      axios.post(process.env.VUE_APP_API_BASE_URL + '/register', {
         username: this.username,
         password: this.password,
         email: this.email,
