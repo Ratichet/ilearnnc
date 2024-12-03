@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import HomePage from '../components/HomePage.vue';
 import ManagerDashboard from '../components/ManagerDashboard.vue';
 import UserForm from '../components/UserForm.vue';
@@ -13,9 +13,9 @@ import EmployeDesactivated from '../components/EmployeDesactivated.vue';
 import SubscriptionDetail from '../components/SubscriptionDetail.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: HomePage },
-  { path: '/register', name: 'UserForm', component: UserForm },
-  { path: '/login', name: 'LoginForm', component: LoginForm },
+  { path: '/', component: HomePage },
+  { path: '/register', component: UserForm },
+  { path: '/login', component: LoginForm },
   { path: '/admin', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/manager', component: ManagerDashboard, meta: { requiresAuth: true, requiresManager: true } },
   { path: '/public/employee/:id', component: EmployeePublicView },
@@ -28,8 +28,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes,
+  history: createWebHashHistory(),  
+  routes
 });
 
 router.beforeEach((to, from, next) => {

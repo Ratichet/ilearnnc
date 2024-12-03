@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app-vue">
     <transition name="fade">
-      <router-view />
+        <router-view></router-view>
     </transition>
   </div>
 </template>

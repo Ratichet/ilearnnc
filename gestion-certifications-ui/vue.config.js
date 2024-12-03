@@ -7,7 +7,8 @@ const webpack = require('webpack');
 
 
 module.exports = {
-  configureWebpack: {
+  publicPath: './',
+    configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
         '__VUE_OPTIONS_API__': JSON.stringify(true),
@@ -16,4 +17,4 @@ module.exports = {
       })
     ]
   }
-}
+};
