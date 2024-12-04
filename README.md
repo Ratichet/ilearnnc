@@ -6,7 +6,7 @@ Clone the repository.
     ```sh
     npm install
     ```
-3. For production, update the `.env.production` file with secure values:
+3. For production, update the `.env` file with secure values:
     ```env
     ACCESS_TOKEN_SECRET=yourproductionaccesstokensecret
     REFRESH_TOKEN_SECRET=yourproductionrefreshtokensecret
