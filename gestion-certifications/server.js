@@ -14,7 +14,7 @@ const port = process.env.PORT;
 // Configuration du middleware CORS
 
 app.use(cors({
-    origin: ['http://localhost:8080', 'http://127.0.0.1']
+    origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : []
 }));
 
 // Middleware pour parser les requêtes JSON
@@ -498,7 +498,7 @@ app.get('/api/employees/:id/qrcode', async (req, res) => {
     const { id } = req.params;
   
     // Generate URL for the public employee page
-    const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
+    const baseUrl = process.env.BASE_URL;
     const url = `${baseUrl}/public/employee/${id}`;
   
     try {
