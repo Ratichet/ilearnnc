@@ -7,19 +7,7 @@
     ```sh
     npm install
     ```
-4. Configure environment variables in the `.env` file:
-    ```env
-    ACCESS_TOKEN_SECRET=youraccesstokensecret
-    REFRESH_TOKEN_SECRET=yourrefreshtokensecret
-    PORT=3000
-    DB_USER=postgres
-    DB_HOST=localhost
-    DB_DATABASE=certifications_db
-    DB_PASSWORD=Ilearn
-    DB_PORT=5432
-    ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080
-    ```
-5. For production, update the `.env.production` file with secure values:
+4. For production, update the `.env.production` file with secure values:
     ```env
     ACCESS_TOKEN_SECRET=yourproductionaccesstokensecret
     REFRESH_TOKEN_SECRET=yourproductionrefreshtokensecret
