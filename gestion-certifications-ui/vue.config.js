@@ -5,9 +5,8 @@ module.exports = defineConfig({
 
 const webpack = require('webpack');
 
-
 module.exports = {
-  publicPath: './',
+  publicPath: './dist',
     configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
