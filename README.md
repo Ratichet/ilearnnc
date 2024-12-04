@@ -1,13 +1,12 @@
 ## Installation
-
+Clone the repository.
 ### Backend
-1. Clone the repository.
-2. Navigate to the `gestion-certifications` directory.
-3. Install dependencies:
+1. Navigate to the `gestion-certifications` directory.
+2. Install dependencies:
     ```sh
     npm install
     ```
-4. For production, update the `.env.production` file with secure values:
+3. For production, update the `.env.production` file with secure values:
     ```env
     ACCESS_TOKEN_SECRET=yourproductionaccesstokensecret
     REFRESH_TOKEN_SECRET=yourproductionrefreshtokensecret
